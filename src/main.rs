@@ -2,12 +2,17 @@
 //stitch
 // delete redis and use mongodb for refresh-tokens
 use axum::Router;
+use axum::middleware;
 use dotenv::dotenv;
 use std::net::SocketAddr;
 use tokio::net::TcpListener;
-use umdr_api::{utils::config::CliConfig, route::{auth::auth_routes, pricing::pricing_routes}, utils::seed::{seed_default_pricing, seed_default_user}, state::{AppState, SecretStore}};
-use axum::middleware;
 use umdr_api::middleware::request_logger::request_logger;
+use umdr_api::{
+    route::{auth::auth_routes, pricing::pricing_routes},
+    state::{AppState, SecretStore},
+    utils::config::CliConfig,
+    utils::seed::{seed_default_pricing, seed_default_user},
+};
 
 #[tokio::main]
 async fn main() {
@@ -42,7 +47,7 @@ async fn main() {
         .with_state(app_state.clone())
         .route_layer(middleware::from_fn_with_state(app_state, request_logger));
 
-    let addr = SocketAddr::from(([127, 0, 0, 1], 8000));
+    let addr = SocketAddr::from(([0, 0, 0, 0], 3000));
 
     let listener = TcpListener::bind(addr).await.unwrap();
 
