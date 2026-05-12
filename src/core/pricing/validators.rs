@@ -21,13 +21,13 @@ impl PricingValidator {
     pub fn validate_update_pricing(payload: &PricingUpdatePayload) -> Result<(), ValidationErrors> {
         let mut errors = Vec::new();
 
-        if let Some(nom) = &payload.nom {
-            if nom.len() < 3 {
-                errors.push(ValidationError {
-                    field: "nom".to_string(),
-                    message: "Le nom doit contenir au moins 3 caractères".to_string(),
-                });
-            }
+        if let Some(nom) = &payload.nom
+            && nom.len() < 3
+        {
+            errors.push(ValidationError {
+                field: "nom".to_string(),
+                message: "Le nom doit contenir au moins 3 caractères".to_string(),
+            });
         }
 
         if let Some(prix) = payload.prix {
@@ -45,13 +45,13 @@ impl PricingValidator {
             }
         }
 
-        if let Some(description) = &payload.description {
-            if description.is_empty() {
-                errors.push(ValidationError {
-                    field: "description".to_string(),
-                    message: "La description doit contenir au moins 1 caractère".to_string(),
-                });
-            }
+        if let Some(description) = &payload.description
+            && description.is_empty()
+        {
+            errors.push(ValidationError {
+                field: "description".to_string(),
+                message: "La description doit contenir au moins 1 caractère".to_string(),
+            });
         }
 
         if errors.is_empty() {
