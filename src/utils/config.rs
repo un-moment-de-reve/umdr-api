@@ -28,7 +28,10 @@ impl CliConfig {
         }
 
         if seed {
-            println!("{} Seed mode enabled: default user and pricing will be created if not already present", green("[OK]"));
+            println!(
+                "{} Seed mode enabled: default user and pricing will be created if not already present",
+                green("[OK]")
+            );
         }
 
         Self { verbose, seed }

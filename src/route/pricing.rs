@@ -5,9 +5,7 @@ use axum::{
 
 use crate::{
     core::auth::middleware as auth_middleware,
-    core::pricing::{
-        controllers::{get_pricings_handler, update_pricing_handler},
-    },
+    core::pricing::controllers::{get_pricings_handler, update_pricing_handler},
     state::AppState,
 };
 
@@ -19,8 +17,7 @@ pub fn pricing_routes(app_state: AppState) -> Router<AppState> {
             auth_middleware::require_access_token,
         ));
 
-    let public_routes = Router::new()
-        .route("/", get(get_pricings_handler));
+    let public_routes = Router::new().route("/", get(get_pricings_handler));
 
     Router::new()
         .nest("/pricing", public_routes)

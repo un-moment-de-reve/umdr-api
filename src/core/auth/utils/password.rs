@@ -22,19 +22,10 @@ fn argon2_instance() -> Result<Argon2<'static>, AppError> {
         .and_then(|value| value.parse::<u32>().ok())
         .unwrap_or(1);
 
-    let params = Params::new(
-        memory_cost,
-        time_cost,
-        parallelism,
-        None,
-    )
-    .map_err(|_| AppError::internal("Invalid Argon2 parameters"))?;
+    let params = Params::new(memory_cost, time_cost, parallelism, None)
+        .map_err(|_| AppError::internal("Invalid Argon2 parameters"))?;
 
-    Ok(Argon2::new(
-        Algorithm::Argon2id,
-        Version::V0x13,
-        params,
-    ))
+    Ok(Argon2::new(Algorithm::Argon2id, Version::V0x13, params))
 }
 
 pub fn hash_password(password: &str) -> Result<String, AppError> {
@@ -50,8 +41,8 @@ pub fn hash_password(password: &str) -> Result<String, AppError> {
 }
 
 pub fn verify_password(password: &str, hash: &str) -> Result<bool, AppError> {
-    let parsed_hash = PasswordHash::new(hash)
-        .map_err(|_| AppError::internal("Invalid stored password hash"))?;
+    let parsed_hash =
+        PasswordHash::new(hash).map_err(|_| AppError::internal("Invalid stored password hash"))?;
 
     let argon2 = argon2_instance()?;
 

@@ -1,13 +1,11 @@
 use std::env;
 
 use mongodb::{
-    Database, bson::{Document, doc, oid::ObjectId}
+    Database,
+    bson::{Document, doc, oid::ObjectId},
 };
 
-use crate::{
-    core::auth::models::User,
-    core::auth::utils::password::hash_password,
-};
+use crate::{core::auth::models::User, core::auth::utils::password::hash_password};
 
 pub async fn seed_default_user(db: &Database) -> Result<(), Box<dyn std::error::Error>> {
     let users = db.collection::<User>("user");
@@ -24,8 +22,8 @@ pub async fn seed_default_user(db: &Database) -> Result<(), Box<dyn std::error::
     let password = env::var("DEFAULT_ADMIN_PASSWORD")
         .map_err(|_| "DEFAULT_ADMIN_PASSWORD is missing in .env")?;
 
-    let password_hash = hash_password(&password)
-        .map_err(|_| "Failed to hash default admin password")?;
+    let password_hash =
+        hash_password(&password).map_err(|_| "Failed to hash default admin password")?;
 
     let user = User {
         id: ObjectId::new(),

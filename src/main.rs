@@ -7,6 +7,7 @@ use dotenv::dotenv;
 use std::net::SocketAddr;
 use tokio::net::TcpListener;
 use umdr_api::middleware::request_logger::request_logger;
+use umdr_api::route::health::health_routes;
 use umdr_api::{
     route::{auth::auth_routes, pricing::pricing_routes},
     state::{AppState, SecretStore},
@@ -41,9 +42,11 @@ async fn main() {
 
     let auth_routes = auth_routes(app_state.clone());
     let pricing_routes = pricing_routes(app_state.clone());
+    let health_routes = health_routes();
     let app = Router::new()
         .merge(auth_routes)
         .merge(pricing_routes)
+        .merge(health_routes)
         .with_state(app_state.clone())
         .route_layer(middleware::from_fn_with_state(app_state, request_logger));
 

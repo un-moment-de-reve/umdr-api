@@ -1,11 +1,11 @@
 use axum::{
+    Json,
     http::StatusCode,
     response::{IntoResponse, Response},
-    Json,
 };
 use mongodb::error::Error as MongoError;
 use serde::Serialize;
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 
 #[derive(Debug)]
 pub struct AppError {

@@ -15,7 +15,7 @@ pub async fn login(
     secret_store: SecretStore,
     username: String,
     password: String,
-    verbose: bool
+    verbose: bool,
 ) -> Result<TokenResponse, AppError> {
     let mut timer = StepTimer::new(verbose, "auth.login");
     let user = users
@@ -31,11 +31,11 @@ pub async fn login(
     if is_valid {
         let (access_token, refresh_token, refresh_jti) =
             create_tokens(&user.id.to_string(), &secret_store);
-             timer.step("create_tokens");
+        timer.step("create_tokens");
         update_refresh_token(users, user.id, &refresh_jti)
             .await
             .map_err(|_| AppError::database_error())?;
-                timer.step("update_refresh_token");
+        timer.step("update_refresh_token");
 
         Ok(TokenResponse::new(access_token, refresh_token))
     } else {
@@ -47,13 +47,12 @@ pub async fn refresh_token(
     users: Collection<User>,
     secret_store: SecretStore,
     old_token: &str,
-    verbose: bool
+    verbose: bool,
 ) -> Result<TokenResponse, AppError> {
     let mut timer = StepTimer::new(verbose, "auth.refresh_token");
     let claims = decode_jwt(old_token, &secret_store)
         .map_err(|_| AppError::unauthorized("Invalid token"))?;
     timer.step("decode_jwt");
-
 
     if claims.token_type != "refresh" {
         return Err(AppError::unauthorized("Expected refresh token"));

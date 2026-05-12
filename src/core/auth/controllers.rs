@@ -18,7 +18,7 @@ pub async fn login_handler(
         state.secret_store.clone(),
         payload.username,
         payload.password,
-        state.verbose
+        state.verbose,
     )
     .await?;
 
@@ -39,7 +39,7 @@ pub async fn refresh_token_handler(
         state.get_user_collection(),
         state.secret_store.clone(),
         old_token,
-        state.verbose
+        state.verbose,
     )
     .await?;
 

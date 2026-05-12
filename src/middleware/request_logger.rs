@@ -22,12 +22,7 @@ pub async fn request_logger(
     let uri = req.uri().clone();
     let started_at = Instant::now();
 
-    println!(
-        "{} {:<7} {}",
-        cyan("[REQ]"),
-        method.to_string(),
-        uri
-    );
+    println!("{} {:<7} {}", cyan("[REQ]"), method.to_string(), uri);
 
     let response = next.run(req).await;
 
