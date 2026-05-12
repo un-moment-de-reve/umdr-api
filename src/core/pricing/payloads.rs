@@ -1,6 +1,7 @@
 use serde::{Deserialize, Serialize};
+use utoipa::ToSchema;
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Deserialize, Serialize, ToSchema)]
 pub struct PricingUpdatePayload {
     pub nom: Option<String>,
     pub prix: Option<f64>,

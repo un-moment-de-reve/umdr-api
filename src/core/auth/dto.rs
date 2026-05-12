@@ -1,11 +1,12 @@
 use serde::Serialize;
+use utoipa::ToSchema;
 
-#[derive(Debug, Serialize)]
+#[derive(Serialize, ToSchema)]
 pub struct TokenResponse {
     pub tokens: Tokens,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Serialize, ToSchema)]
 pub struct Tokens {
     pub access: String,
     pub refresh: String,

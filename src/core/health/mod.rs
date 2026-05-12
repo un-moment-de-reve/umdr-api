@@ -1,3 +1,4 @@
 pub mod controllers;
-mod dto;
+pub mod dto;
+
 mod services;

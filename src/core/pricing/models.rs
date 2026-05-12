@@ -1,8 +1,9 @@
 use mongodb::bson::oid::ObjectId;
 use serde::{Deserialize, Serialize};
 use std::str::FromStr;
+use utoipa::ToSchema;
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, ToSchema)]
 #[serde(rename_all = "snake_case")]
 pub enum Categorie {
     Epilation,
@@ -12,9 +13,10 @@ pub enum Categorie {
     MiseEnBeaute,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, ToSchema)]
 pub struct Pricing {
     #[serde(rename = "_id")]
+    #[schema(value_type = String)]
     pub id: ObjectId,
     pub categorie: Categorie,
     pub sous_categorie: String,

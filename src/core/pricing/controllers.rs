@@ -18,6 +18,18 @@ use super::{
     services,
 };
 
+#[utoipa::path(
+    get,
+    path = "/pricing",
+    tag = "Pricing",
+    responses(
+        (
+            status = 200,
+            description = "Liste des tarifs",
+            body = ApiResponse<PricingsResponse>
+        )
+    )
+)]
 pub async fn get_pricings_handler(State(state): State<AppState>) -> AppResult<PricingsResponse> {
     let pricings = state.mongo.database("umdr-db").collection("pricing");
 
@@ -26,6 +38,37 @@ pub async fn get_pricings_handler(State(state): State<AppState>) -> AppResult<Pr
     Ok(ApiResponse::success(response))
 }
 
+#[utoipa::path(
+    patch,
+    path = "/pricing/{id}",
+    tag = "Pricing",
+    security(
+        ("bearer_auth" = [])
+    ),
+    params(
+        (
+            "id" = String,
+            Path,
+            description = "Identifiant MongoDB du tarif"
+        )
+    ),
+    request_body = PricingUpdatePayload,
+    responses(
+        (
+            status = 200,
+            description = "Tarif mis à jour",
+            body = ApiResponse<PricingResponse>
+        ),
+        (
+            status = 400,
+            description = "Identifiant de tarif invalide"
+        ),
+        (
+            status = 404,
+            description = "Tarif introuvable"
+        )
+    )
+)]
 pub async fn update_pricing_handler(
     State(state): State<AppState>,
     Path(id): Path<String>,

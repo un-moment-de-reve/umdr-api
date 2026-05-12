@@ -20,4 +20,4 @@ COPY --from=builder /app/target/release/umdr-api /app/api
 
 EXPOSE 3000
 
-CMD ["/app/api", "--seed"]
+CMD ["/app/api"]

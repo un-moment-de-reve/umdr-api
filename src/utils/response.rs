@@ -5,10 +5,11 @@ use axum::{
 };
 use serde::Serialize;
 use serde_json::{Value, json};
+use utoipa::ToSchema;
 
 use crate::utils::error::AppError;
 
-#[derive(Debug, Serialize)]
+#[derive(Serialize, ToSchema)]
 pub struct ApiResponse<T>
 where
     T: Serialize,
