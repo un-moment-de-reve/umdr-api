@@ -1,14 +1,24 @@
 name: Deploy API via Tailscale
 
 on:
-  push:
+  workflow_run:
+    workflows:
+      - Build
+    types:
+      - completed
     branches:
       - main
+
   workflow_dispatch:
 
 jobs:
   deploy:
+    name: Deploy API
     runs-on: ubuntu-latest
+
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      github.event.workflow_run.conclusion == 'success'
 
     steps:
       - name: Checkout repository
