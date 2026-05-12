@@ -1,7 +1,7 @@
 use chrono::Utc;
 use mongodb::{
-    bson::{doc, oid::ObjectId, Document},
     Collection,
+    bson::{Document, doc, oid::ObjectId},
 };
 
 use crate::utils::{error::AppError, timing::StepTimer};
@@ -68,13 +68,9 @@ pub async fn update_pricing(
     }
 
     update_doc.insert("updated_at", Utc::now().timestamp());
-    
 
     let result = pricings
-        .update_one(
-            doc! { "_id": id },
-            doc! { "$set": update_doc },
-        )
+        .update_one(doc! { "_id": id }, doc! { "$set": update_doc })
         .await?;
 
     timer.step("update_pricing");

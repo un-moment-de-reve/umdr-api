@@ -1,6 +1,6 @@
 use std::time::{Duration, Instant};
 
-use crate::utils::terminal::{green, yellow, red, blue, purple};
+use crate::utils::terminal::{blue, green, purple, red, yellow};
 
 pub struct StepTimer {
     verbose: bool,

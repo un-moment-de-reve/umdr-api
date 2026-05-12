@@ -1,3 +1,4 @@
 /target
 .env
 pricings_seed.json
+docker-compose.local.yml

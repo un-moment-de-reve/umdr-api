@@ -39,7 +39,8 @@ impl PricingValidator {
             } else if ((prix * 100.0).fract()).abs() > EPSILON {
                 errors.push(ValidationError {
                     field: "prix".to_string(),
-                    message: "Le prix doit avoir au maximum 2 chiffres après la virgule".to_string(),
+                    message: "Le prix doit avoir au maximum 2 chiffres après la virgule"
+                        .to_string(),
                 });
             }
         }
