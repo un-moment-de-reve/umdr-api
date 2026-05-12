@@ -1,8 +1,9 @@
 use serde::Serialize;
 
 use super::models::{Categorie, Pricing};
+use utoipa::ToSchema;
 
-#[derive(Debug, Serialize)]
+#[derive(Serialize, ToSchema)]
 pub struct PricingResponse {
     pub id: String,
     pub categorie: Categorie,
@@ -14,7 +15,7 @@ pub struct PricingResponse {
     pub updated_at: Option<i64>,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Serialize, ToSchema)]
 pub struct PricingsResponse {
     pub pricings: Vec<PricingResponse>,
 }

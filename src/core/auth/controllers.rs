@@ -9,6 +9,23 @@ use crate::{
     },
 };
 
+#[utoipa::path(
+    post,
+    path = "/auth/login",
+    tag = "Auth",
+    request_body = LoginPayload,
+    responses(
+        (
+            status = 200,
+            description = "Connexion réussie",
+            body = ApiResponse<TokenResponse>
+        ),
+        (
+            status = 401,
+            description = "Identifiants invalides"
+        )
+    )
+)]
 pub async fn login_handler(
     State(state): State<AppState>,
     Json(payload): Json<LoginPayload>,
@@ -25,6 +42,25 @@ pub async fn login_handler(
     Ok(ApiResponse::success(response))
 }
 
+#[utoipa::path(
+    get,
+    path = "/auth/refresh",
+    tag = "Auth",
+    security(
+        ("bearer_auth" = [])
+    ),
+    responses(
+        (
+            status = 200,
+            description = "Token rafraîchi",
+            body = ApiResponse<TokenResponse>
+        ),
+        (
+            status = 401,
+            description = "Refresh token manquant ou invalide"
+        )
+    )
+)]
 pub async fn refresh_token_handler(
     State(state): State<AppState>,
     headers: HeaderMap,

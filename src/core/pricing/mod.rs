@@ -1,7 +1,7 @@
 pub mod controllers;
+pub mod dto;
+pub mod models;
+pub mod payloads;
 
-mod dto;
-mod models;
-mod payloads;
 mod services;
 mod validators;
