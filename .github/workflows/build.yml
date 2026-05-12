@@ -6,6 +6,8 @@ on:
       - Lint
     types:
       - completed
+    branches:
+      - main
 
   workflow_dispatch:
 
