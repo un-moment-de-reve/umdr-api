@@ -12,7 +12,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: api-rust
+    image: umdr-api
+    container_name: umdr-api
     restart: unless-stopped
     depends_on:
       - mongo
