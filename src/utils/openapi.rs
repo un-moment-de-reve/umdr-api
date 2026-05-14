@@ -8,8 +8,8 @@ use crate::{
         auth::{dto::TokenResponse, payloads::LoginPayload},
         health::dto::HealthCheckResponse,
         pricing::{
-            dto::{PricingResponse, PricingsResponse},
-            payloads::PricingUpdatePayload,
+            dto::{PricingDeleteResponse, PricingResponse, PricingsResponse},
+            payloads::{PricingCreatePayload, PricingUpdatePayload},
         },
     },
     utils::response::ApiResponse,
@@ -23,6 +23,8 @@ use crate::{
         crate::core::health::controllers::health_check_handler,
         crate::core::pricing::controllers::get_pricings_handler,
         crate::core::pricing::controllers::update_pricing_handler,
+        crate::core::pricing::controllers::create_pricing_handler,
+        crate::core::pricing::controllers::delete_pricing_handler,
     ),
     components(
         schemas(
@@ -30,12 +32,15 @@ use crate::{
             TokenResponse,
             HealthCheckResponse,
             PricingUpdatePayload,
+            PricingCreatePayload,
             PricingResponse,
             PricingsResponse,
+            PricingDeleteResponse,
             ApiResponse<TokenResponse>,
             ApiResponse<HealthCheckResponse>,
             ApiResponse<PricingResponse>,
-            ApiResponse<PricingsResponse>
+            ApiResponse<PricingsResponse>,
+            ApiResponse<PricingDeleteResponse>,
         )
     ),
     tags(
