@@ -4,6 +4,7 @@ WORKDIR /app
 
 COPY Cargo.toml Cargo.lock ./
 COPY src ./src
+COPY pricings_seed.json ./pricings_seed.json
 
 RUN cargo build --release
 
@@ -20,4 +21,4 @@ COPY --from=builder /app/target/release/umdr-api /app/api
 
 EXPOSE 3000
 
-CMD ["/app/api"]
+CMD ["/app/api", "--seed"]
