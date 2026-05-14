@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    name: Build release
+    name: Build release and test Docker image
     runs-on: ubuntu-latest
 
     steps:
@@ -23,3 +23,88 @@ jobs:
 
       - name: Build release
         run: cargo build --release --all-features
+
+      - name: Create test pricing seed file
+        run: |
+          echo '[]' > pricings_seed.json
+
+      - name: Build Docker image
+        run: |
+          docker build -t umdr-api:test .
+
+      - name: Create Docker test network
+        run: |
+          docker network create umdr-test-network
+
+      - name: Start MongoDB test container
+        run: |
+          docker run -d \
+            --name mongo-test \
+            --network umdr-test-network \
+            mongo:7
+
+      - name: Wait for MongoDB
+        run: |
+          for i in {1..30}; do
+            if docker exec mongo-test mongosh --quiet --eval "db.adminCommand('ping').ok" | grep -q 1; then
+              echo "MongoDB is ready"
+              exit 0
+            fi
+
+            if [ "$(docker inspect -f '{{.State.Running}}' mongo-test 2>/dev/null)" != "true" ]; then
+              echo "MongoDB container stopped unexpectedly"
+              docker logs mongo-test || true
+              exit 1
+            fi
+
+            echo "Waiting for MongoDB..."
+            sleep 2
+          done
+
+          echo "MongoDB did not become ready"
+          docker logs mongo-test || true
+          exit 1
+
+      - name: Start API test container
+        run: |
+          docker run -d \
+            --name umdr-api-test \
+            --network umdr-test-network \
+            -p 3000:3000 \
+            -e MONGO_URI=mongodb://mongo-test:27017/umdr-db \
+            -e JWT_SECRET=test-jwt-secret \
+            -e DEFAULT_ADMIN_USERNAME=admin \
+            -e DEFAULT_ADMIN_PASSWORD=admin-password \
+            -e ARGON2_MEMORY_COST=19456 \
+            -e ARGON2_TIME_COST=2 \
+            -e ARGON2_PARALLELISM=1 \
+            -e RUST_LOG=info \
+            umdr-api:test
+
+      - name: Test API health endpoint
+        run: |
+          for i in {1..30}; do
+            if curl -fsS http://localhost:3000/health; then
+              echo "API is healthy"
+              exit 0
+            fi
+
+            if [ "$(docker inspect -f '{{.State.Running}}' umdr-api-test 2>/dev/null)" != "true" ]; then
+              echo "API container stopped unexpectedly"
+              docker logs umdr-api-test || true
+              exit 1
+            fi
+
+            echo "Waiting for API..."
+            sleep 2
+          done
+
+          echo "API did not become healthy"
+          docker logs umdr-api-test || true
+          exit 1
+
+      - name: Cleanup Docker test containers
+        if: always()
+        run: |
+          docker rm -f umdr-api-test mongo-test || true
+          docker network rm umdr-test-network || true
