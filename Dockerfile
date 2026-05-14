@@ -18,6 +18,7 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /app/target/release/umdr-api /app/api
+COPY --from=builder /app/pricings_seed.json /app/pricings_seed.json
 
 EXPOSE 3000
 
