@@ -4,6 +4,7 @@ WORKDIR /app
 
 COPY Cargo.toml Cargo.lock ./
 COPY src ./src
+COPY pricings_seed.json ./pricings_seed.json
 
 RUN cargo build --release
 
