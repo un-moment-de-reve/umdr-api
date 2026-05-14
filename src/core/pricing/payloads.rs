@@ -7,3 +7,12 @@ pub struct PricingUpdatePayload {
     pub prix: Option<f64>,
     pub description: Option<String>,
 }
+
+#[derive(Deserialize, Serialize, ToSchema)]
+pub struct PricingCreatePayload {
+    pub nom: String,
+    pub prix: f64,
+    pub description: String,
+    pub categorie: String,
+    pub sous_categorie: String,
+}

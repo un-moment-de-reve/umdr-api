@@ -1,3 +1,4 @@
+use mongodb::bson::oid::ObjectId;
 use serde::Serialize;
 
 use super::models::{Categorie, Pricing};
@@ -40,5 +41,16 @@ impl PricingsResponse {
         Self {
             pricings: pricings.into_iter().map(PricingResponse::from).collect(),
         }
+    }
+}
+
+#[derive(Serialize, ToSchema)]
+pub struct PricingDeleteResponse {
+    pub id: String,
+}
+
+impl From<ObjectId> for PricingDeleteResponse {
+    fn from(id: ObjectId) -> Self {
+        Self { id: id.to_hex() }
     }
 }
