@@ -1,7 +1,11 @@
 use axum::{Json, extract::State, http::HeaderMap};
 
 use crate::{
-    core::auth::{dto::TokenResponse, payloads::LoginPayload, services},
+    core::auth::{
+        dto::TokenResponse,
+        payloads::{LoginPayload, RegisterPayload},
+        services,
+    },
     state::AppState,
     utils::{
         error::AppError,
@@ -40,6 +44,40 @@ pub async fn login_handler(
     .await?;
 
     Ok(ApiResponse::success(response))
+}
+
+#[utoipa::path(
+    post,
+    path = "/auth/register",
+    tag = "Auth",
+    request_body = LoginPayload,
+    security(
+        ("bearer_auth" = [])
+    ),
+    responses(
+        (
+            status = 200,
+            description = "Inscription réussie"
+        ),
+        (
+            status = 400,
+            description = "Nom d'utilisateur déjà existant"
+        )
+    )
+)]
+pub async fn register_handler(
+    State(state): State<AppState>,
+    Json(payload): Json<RegisterPayload>,
+) -> AppResult<()> {
+    services::register(
+        state.get_user_collection(),
+        payload.username,
+        payload.password,
+        state.verbose,
+    )
+    .await?;
+
+    Ok(ApiResponse::success(()))
 }
 
 #[utoipa::path(

@@ -2,7 +2,7 @@ use crate::core::auth::dto::TokenResponse;
 use crate::core::auth::models::User;
 use crate::core::auth::token::{create_tokens, decode_jwt};
 use crate::core::auth::utils::jwt::update_refresh_token;
-use crate::core::auth::utils::password::verify_password;
+use crate::core::auth::utils::password::{hash_password, verify_password};
 use crate::state::SecretStore;
 use crate::utils::error::AppError;
 use crate::utils::timing::StepTimer;
@@ -41,6 +41,42 @@ pub async fn login(
     } else {
         Err(AppError::unauthorized("Invalid credentials"))
     }
+}
+
+pub async fn register(
+    users: Collection<User>,
+    username: String,
+    password: String,
+    verbose: bool,
+) -> Result<(), AppError> {
+    let mut timer = StepTimer::new(verbose, "auth.register");
+    if users
+        .find_one(doc! { "username": &username })
+        .await
+        .map_err(|_| AppError::database_error())?
+        .is_some()
+    {
+        return Err(AppError::bad_request("Username already exists"));
+    }
+    timer.step("check_username");
+
+    let hashed_password = hash_password(&password)?;
+    timer.step("hash_password");
+
+    let new_user = User {
+        id: ObjectId::new(),
+        username: username.clone(),
+        password: hashed_password,
+        refresh_jti: None,
+    };
+
+    users
+        .insert_one(&new_user)
+        .await
+        .map_err(|_| AppError::database_error())?;
+    timer.step("insert_user");
+
+    Ok(())
 }
 
 pub async fn refresh_token(

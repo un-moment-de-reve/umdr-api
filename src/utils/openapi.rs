@@ -5,7 +5,10 @@ use utoipa::{
 
 use crate::{
     core::{
-        auth::{dto::TokenResponse, payloads::LoginPayload},
+        auth::{
+            dto::TokenResponse,
+            payloads::{LoginPayload, RegisterPayload},
+        },
         health::dto::HealthCheckResponse,
         pricing::{
             dto::{PricingDeleteResponse, PricingResponse, PricingsResponse},
@@ -19,6 +22,7 @@ use crate::{
 #[openapi(
     paths(
         crate::core::auth::controllers::login_handler,
+        crate::core::auth::controllers::register_handler,
         crate::core::auth::controllers::refresh_token_handler,
         crate::core::health::controllers::health_check_handler,
         crate::core::pricing::controllers::get_pricings_handler,
@@ -29,6 +33,7 @@ use crate::{
     components(
         schemas(
             LoginPayload,
+            RegisterPayload,
             TokenResponse,
             HealthCheckResponse,
             PricingUpdatePayload,

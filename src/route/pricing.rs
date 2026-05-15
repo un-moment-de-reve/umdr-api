@@ -15,7 +15,7 @@ use crate::{
 };
 
 pub fn pricing_routes(app_state: AppState) -> Router<AppState> {
-    let protected_routes = Router::new()
+    let protected_by_access_routes = Router::new()
         .route("/{id}", patch(update_pricing_handler))
         .route("/{id}", delete(delete_pricing_handler))
         .route("/", post(create_pricing_handler))
@@ -28,5 +28,5 @@ pub fn pricing_routes(app_state: AppState) -> Router<AppState> {
 
     Router::new()
         .nest("/pricing", public_routes)
-        .nest("/pricing", protected_routes)
+        .nest("/pricing", protected_by_access_routes)
 }
